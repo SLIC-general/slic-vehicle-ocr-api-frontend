@@ -1,0 +1,8 @@
+
+{
+  "name": "Vehicle CR Smart OCR",
+  "description": "An intelligent application to extract structured data from Vehicle Registration Certificates (CR) using Gemini AI's multimodal vision capabilities.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
