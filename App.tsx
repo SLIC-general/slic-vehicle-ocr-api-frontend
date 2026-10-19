@@ -8,7 +8,6 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [extractedData, setExtractedData] = useState<VehicleCRData | null>(null);
   const [fullResponse, setFullResponse] = useState<AnalyzeResponse | null>(null);
-  const [rawErrorJson, setRawErrorJson] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -18,7 +17,6 @@ const App: React.FC = () => {
   const handleFileSelect = async (file: File) => {
     setSelectedFile(file);
     setError(null);
-    setRawErrorJson(null);
     setLoading(true);
     setExtractedData(null);
     setFullResponse(null);
@@ -40,14 +38,8 @@ const App: React.FC = () => {
       setExtractedData(result.data.fields);
     } catch (err: any) {
       console.error(err);
-      if (err instanceof ApiError && err.rawJson) {
-        setRawErrorJson(err.rawJson);
-        setError(err.message || 'Analysis failed');
-      } else {
-        const fallbackMsg = err.message || 'Failed to analyze document. Please check the backend service.';
-        setError(fallbackMsg);
-        setRawErrorJson({ error: { message: fallbackMsg } });
-      }
+      const fallbackMsg = err.message || 'Failed to analyze document. Please check the backend service.';
+      setError(fallbackMsg);
     } finally {
       setLoading(false);
     }
@@ -56,7 +48,6 @@ const App: React.FC = () => {
   const reset = () => {
     setExtractedData(null);
     setFullResponse(null);
-    setRawErrorJson(null);
     setError(null);
     setPreviewUrl(null);
     setSelectedFile(null);
@@ -64,9 +55,7 @@ const App: React.FC = () => {
   };
 
   const copyJson = () => {
-    const textToCopy = fullResponse 
-      ? JSON.stringify(fullResponse, null, 2) 
-      : (rawErrorJson ? JSON.stringify(rawErrorJson, null, 2) : '');
+    const textToCopy = fullResponse ? JSON.stringify(fullResponse, null, 2) : '';
     if (textToCopy) {
       navigator.clipboard.writeText(textToCopy);
       setCopyStatus('Copied!');
@@ -88,13 +77,7 @@ const App: React.FC = () => {
             </div>
             <div>
               <h1 className="text-lg font-bold text-gray-900 leading-tight">Sri Lanka Vehicle CR Smart OCR</h1>
-              <p className="text-xs text-gray-500">Fast 28-field Extraction & Quality Assessment</p>
             </div>
-          </div>
-          <div className="flex items-center space-x-2">
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
-              API v1 Connected
-            </span>
           </div>
         </div>
       </header>
@@ -103,7 +86,7 @@ const App: React.FC = () => {
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="max-w-4xl mx-auto">
           {/* Uploader Section */}
-          {!extractedData && !loading && !rawErrorJson && (
+          {!extractedData && !loading && !error && (
             <div className="space-y-6">
               <div className="text-center space-y-2">
                 <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Upload Vehicle Certificate</h2>
@@ -127,8 +110,8 @@ const App: React.FC = () => {
                 <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
               </div>
               <div className="text-center">
-                <h3 className="text-lg font-bold text-gray-800">Analyzing Document & Quality...</h3>
-                <p className="text-xs text-gray-500 mt-1">Inspecting resolution, sharpness, brightness & reading 28 topics</p>
+                <h3 className="text-lg font-semibold text-gray-800">Analyzing document…</h3>
+                <p className="text-sm text-gray-500 mt-1">This can take up to a minute.</p>
               </div>
               <div className="w-48 bg-gray-100 h-1.5 rounded-full overflow-hidden mt-2">
                 <div className="bg-blue-600 h-full w-full animate-[loading_1.5s_infinite]"></div>
@@ -136,38 +119,16 @@ const App: React.FC = () => {
             </div>
           )}
 
-          {/* Error State with Raw JSON block for 422 UNUSABLE */}
+          {/* Clean Error State */}
           {error && !loading && (
-            <div className="mb-6 space-y-4">
-              <div className="p-4 bg-red-50 border-l-4 border-red-500 rounded-r-xl flex items-start justify-between">
-                <div>
-                  <h4 className="text-sm font-bold text-red-800">Processing Error</h4>
-                  <p className="text-sm text-red-700 mt-0.5">{error}</p>
-                </div>
-                <button 
-                  onClick={reset}
-                  className="px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-800 rounded-lg text-xs font-semibold transition-colors"
-                >
-                  Try Again
-                </button>
-              </div>
-
-              {rawErrorJson && (
-                <div className="bg-white p-4 rounded-xl shadow border border-gray-200 space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Raw Error Response (422 / Error)</span>
-                    <button 
-                      onClick={copyJson}
-                      className="px-3 py-1 bg-gray-800 hover:bg-gray-700 text-white rounded text-xs font-medium transition"
-                    >
-                      {copyStatus}
-                    </button>
-                  </div>
-                  <pre className="bg-gray-900 text-red-400 p-4 rounded overflow-auto text-xs font-mono max-h-96">
-                    {JSON.stringify(rawErrorJson, null, 2)}
-                  </pre>
-                </div>
-              )}
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center justify-between gap-4">
+              <p className="text-sm text-red-700">{error}</p>
+              <button
+                onClick={reset}
+                className="shrink-0 px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-800 rounded-lg text-xs font-semibold transition-colors"
+              >
+                Try again
+              </button>
             </div>
           )}
 
@@ -201,7 +162,7 @@ const App: React.FC = () => {
                   )}
                 </div>
 
-                {/* View Mode Toggle & Copy */}
+                {/* View Mode Toggle */}
                 <div className="flex items-center space-x-2">
                   <div className="inline-flex rounded-lg border border-gray-200 bg-gray-50 p-0.5">
                     <button
@@ -221,13 +182,6 @@ const App: React.FC = () => {
                       JSON
                     </button>
                   </div>
-
-                  <button
-                    onClick={copyJson}
-                    className="px-3 py-1.5 bg-gray-900 hover:bg-gray-800 text-white rounded-lg text-xs font-medium shadow-sm transition"
-                  >
-                    {copyStatus}
-                  </button>
 
                   <button
                     onClick={reset}
@@ -329,6 +283,10 @@ const App: React.FC = () => {
           100% { transform: translateX(200%); }
         }
       `}</style>
+
+      <footer className="fixed bottom-3 right-4 text-xs text-gray-400 select-none">
+        v1.0.1
+      </footer>
     </div>
   );
 };
