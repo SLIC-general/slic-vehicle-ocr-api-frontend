@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Uploader from './components/Uploader';
 import ResultDisplay from './components/ResultDisplay';
 import { VehicleCRData, OverallQuality, AnalyzeResponse } from './types';
-import { analyzeCrDocument, ApiError } from './services/apiClient';
+import { analyzeCrDocument } from './services/apiClient';
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -69,14 +69,14 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="bg-blue-600 text-white p-2 rounded-lg font-black text-xl shadow-md shadow-blue-200">
-              CR
-            </div>
+      <header className="bg-white border-b-4 border-[#007b83] sticky top-0 z-50 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <img src="/logo.png" alt="SLIC Logo" className="h-12 w-auto object-contain" />
+            <div className="h-8 w-px bg-gray-300 mx-2 hidden sm:block"></div>
             <div>
-              <h1 className="text-lg font-bold text-gray-900 leading-tight">Sri Lanka Vehicle CR Smart OCR</h1>
+              <h1 className="text-2xl font-bold text-[#007b83] leading-tight tracking-tight">Vehicle OCR Portal</h1>
+              <p className="text-xs text-gray-500 font-medium">Sri Lanka Insurance General</p>
             </div>
           </div>
         </div>
@@ -88,15 +88,15 @@ const App: React.FC = () => {
           {/* Uploader Section */}
           {!extractedData && !loading && !error && (
             <div className="space-y-6">
-              <div className="text-center space-y-2">
-                <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Upload Vehicle Certificate</h2>
-                <p className="text-gray-600 max-w-xl mx-auto text-sm">
+              <div className="text-center space-y-3">
+                <h2 className="text-3xl font-extrabold text-[#007b83] tracking-tight">Upload Registration Certificate</h2>
+                <p className="text-gray-600 max-w-xl mx-auto text-sm font-medium">
                   Upload an image (PNG, JPG, WEBP) or PDF of a Sri Lankan Certificate of Registration. 
-                  Document quality will be evaluated and all 28 topics extracted.
+                  Document quality will be evaluated and all 28 topics extracted securely.
                 </p>
               </div>
 
-              <div className="bg-white p-8 rounded-2xl shadow-xl shadow-gray-100 border border-gray-100">
+              <div className="bg-white p-8 rounded-2xl shadow-xl shadow-teal-900/5 border border-gray-100">
                 <Uploader onFileSelect={handleFileSelect} disabled={loading} />
               </div>
             </div>
@@ -106,26 +106,26 @@ const App: React.FC = () => {
           {loading && (
             <div className="flex flex-col items-center justify-center p-12 bg-white rounded-2xl shadow-xl border border-gray-100 space-y-4">
               <div className="relative w-16 h-16">
-                <div className="absolute top-0 left-0 w-full h-full border-4 border-blue-200 rounded-full animate-ping"></div>
-                <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                <div className="absolute top-0 left-0 w-full h-full border-4 border-[#00bcd4] rounded-full animate-ping opacity-50"></div>
+                <div className="w-16 h-16 border-4 border-[#007b83] border-t-transparent rounded-full animate-spin"></div>
               </div>
               <div className="text-center">
-                <h3 className="text-lg font-semibold text-gray-800">Analyzing document…</h3>
-                <p className="text-sm text-gray-500 mt-1">This can take up to a minute.</p>
+                <h3 className="text-xl font-bold text-[#007b83]">Analyzing document…</h3>
+                <p className="text-sm text-gray-500 mt-1 font-medium">This can take up to a minute.</p>
               </div>
-              <div className="w-48 bg-gray-100 h-1.5 rounded-full overflow-hidden mt-2">
-                <div className="bg-blue-600 h-full w-full animate-[loading_1.5s_infinite]"></div>
+              <div className="w-64 bg-gray-100 h-2 rounded-full overflow-hidden mt-4">
+                <div className="bg-[#007b83] h-full w-full animate-[loading_1.5s_infinite]"></div>
               </div>
             </div>
           )}
 
           {/* Clean Error State */}
           {error && !loading && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center justify-between gap-4">
-              <p className="text-sm text-red-700">{error}</p>
+            <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-xl flex items-center justify-between gap-4 shadow-sm">
+              <p className="text-sm text-red-800 font-medium">{error}</p>
               <button
                 onClick={reset}
-                className="shrink-0 px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-800 rounded-lg text-xs font-semibold transition-colors"
+                className="shrink-0 px-4 py-2 bg-red-100 hover:bg-red-200 text-red-800 rounded-lg text-xs font-bold transition-colors"
               >
                 Try again
               </button>
@@ -136,7 +136,7 @@ const App: React.FC = () => {
           {extractedData && (
             <div className="space-y-6">
               {/* Quality Banner & Controls Header */}
-              <div className="bg-white p-4 rounded-xl shadow-md border border-gray-100 flex flex-wrap items-center justify-between gap-4">
+              <div className="bg-white p-4 rounded-xl shadow-md border border-gray-100 flex flex-wrap items-center justify-between gap-4 border-t-4 border-t-[#007b83]">
                 <div className="flex items-center space-x-3">
                   {/* Quality Badge */}
                   {grade === 'GOOD' && (
@@ -167,16 +167,16 @@ const App: React.FC = () => {
                   <div className="inline-flex rounded-lg border border-gray-200 bg-gray-50 p-0.5">
                     <button
                       onClick={() => setViewMode('cards')}
-                      className={`px-3 py-1 text-xs font-semibold rounded-md transition ${
-                        viewMode === 'cards' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'
+                      className={`px-3 py-1 text-xs font-bold rounded-md transition ${
+                        viewMode === 'cards' ? 'bg-white text-[#007b83] shadow-sm' : 'text-gray-500 hover:text-gray-900'
                       }`}
                     >
                       Cards
                     </button>
                     <button
                       onClick={() => setViewMode('json')}
-                      className={`px-3 py-1 text-xs font-semibold rounded-md transition ${
-                        viewMode === 'json' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'
+                      className={`px-3 py-1 text-xs font-bold rounded-md transition ${
+                        viewMode === 'json' ? 'bg-white text-[#007b83] shadow-sm' : 'text-gray-500 hover:text-gray-900'
                       }`}
                     >
                       JSON
@@ -185,7 +185,7 @@ const App: React.FC = () => {
 
                   <button
                     onClick={reset}
-                    className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-xs font-medium transition"
+                    className="px-4 py-1.5 bg-[#007b83] hover:bg-teal-800 text-white rounded-lg text-xs font-bold shadow-md transition"
                   >
                     New Upload
                   </button>
@@ -220,8 +220,8 @@ const App: React.FC = () => {
                           className="w-full h-auto rounded-lg shadow-inner border border-gray-200"
                         />
                       ) : (
-                        <div className="p-6 bg-blue-50 border border-blue-200 rounded-xl flex flex-col items-center justify-center text-center">
-                          <svg className="w-12 h-12 text-blue-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="p-6 bg-teal-50 border border-teal-200 rounded-xl flex flex-col items-center justify-center text-center">
+                          <svg className="w-12 h-12 text-[#00bcd4] mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
                           </svg>
                           <p className="font-semibold text-gray-800 text-xs break-all">{selectedFile?.name}</p>
@@ -258,11 +258,11 @@ const App: React.FC = () => {
               ) : (
                 /* JSON Display Mode */
                 <div className="bg-white p-6 rounded-2xl shadow-xl border border-gray-100 space-y-4">
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-sm font-bold text-gray-800">Complete JSON Response</h3>
+                  <div className="flex justify-between items-center border-b border-gray-100 pb-3">
+                    <h3 className="text-sm font-bold text-[#007b83]">Complete JSON Response</h3>
                     <button
                       onClick={copyJson}
-                      className="px-3 py-1.5 bg-gray-900 hover:bg-gray-800 text-white rounded text-xs font-semibold shadow-sm transition"
+                      className="px-3 py-1.5 bg-gray-800 hover:bg-gray-900 text-white rounded text-xs font-semibold shadow-sm transition"
                     >
                       {copyStatus}
                     </button>
