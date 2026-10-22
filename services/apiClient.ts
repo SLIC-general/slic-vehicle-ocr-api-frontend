@@ -28,6 +28,7 @@ function friendlyMessage(status: number): string {
 
 export async function analyzeCrDocument(file: File): Promise<AnalyzeResponse> {
     const baseUrl = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000').replace(/\/+$/, '');
+    console.log('API base:', baseUrl);
   const formData = new FormData();
   formData.append('file', file);
 

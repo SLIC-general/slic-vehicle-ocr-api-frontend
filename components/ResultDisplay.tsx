@@ -55,14 +55,14 @@ const ResultDisplay: React.FC<ResultDisplayProps> = ({ data, overallQuality, fie
 
   return (
     <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-6">
-        <div className="flex justify-between items-center">
-          <h2 className="text-xl font-bold text-white">Extracted CR Fields (28 Fields)</h2>
-          <div className="bg-white/20 px-3 py-1 rounded-full text-xs font-semibold text-white backdrop-blur-sm">
-            AI Confidence: {Math.round((data.confidenceScore || 0.98) * 100)}%
-          </div>
-        </div>
+  <div className="bg-gradient-to-r from-[#007b83] to-[#00bcd4] p-6">
+    <div className="flex justify-between items-center">
+      <h2 className="text-xl font-bold text-white">Extracted CR Fields (28 Fields)</h2>
+      <div className="bg-white/20 px-3 py-1 rounded-full text-xs font-semibold text-white backdrop-blur-sm border border-white/30">
+        AI Confidence: {Math.round((data.confidenceScore || 0.98) * 100)}%
       </div>
+    </div>
+  </div>
       
       <div className="p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-3">
