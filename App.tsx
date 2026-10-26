@@ -16,7 +16,7 @@ const App: React.FC = () => {
 
   const handleFileSelect = async (file: File) => {
     setSelectedFile(file);
-    setError(null);
+    setError(null); // Clear old errors
     setLoading(true);
     setExtractedData(null);
     setFullResponse(null);
@@ -38,7 +38,8 @@ const App: React.FC = () => {
       setExtractedData(result.data.fields);
     } catch (err: any) {
       console.error(err);
-      const fallbackMsg = err.message || 'Failed to analyze document. Please check the backend service.';
+      // err.message contains our friendly message from apiClient.ts!
+      const fallbackMsg = err.message || 'An unexpected error occurred. Please try again.';
       setError(fallbackMsg);
     } finally {
       setLoading(false);
@@ -119,10 +120,13 @@ const App: React.FC = () => {
             </div>
           )}
 
-          {/* Clean Error State */}
+          {/* Clean Error State (Grandma-Proof) */}
           {error && !loading && (
-            <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-xl flex items-center justify-between gap-4 shadow-sm">
-              <p className="text-sm text-red-800 font-medium">{error}</p>
+            <div
+              role="alert"
+              className="max-w-2xl mx-auto bg-red-50 border border-red-200 text-red-800 p-4 rounded-xl mt-4 flex items-center justify-between gap-4 shadow-sm"
+            >
+              <p className="font-semibold text-sm">{error}</p>
               <button
                 onClick={reset}
                 className="shrink-0 px-4 py-2 bg-red-100 hover:bg-red-200 text-red-800 rounded-lg text-xs font-bold transition-colors"
